@@ -1,20 +1,24 @@
 {
+  "name": "mystyles",
   "description": "Apply custom user styles to pages.",
   "manifest_version": 2,
-  "name": "mystyles",
   "version": "0.1.0",
+  "background": {
+    "scripts": [
+      "dist/main.js"
+    ]
+  },
+  "icons": {
+    "48": "icon_48.png",
+    "96": "icon_96.png"
+  },
   "page_action": {
-    "default_icon": "icons/toolbar.png",
+    "default_icon": "icon_96.png",
     "browser_style": true
   },
   "permissions": [
     "tabs",
     "webRequest",
     "<all_urls>"
-  ],
-  "background": {
-    "scripts": [
-      "main.js"
-    ]
-  }
+  ]
 }

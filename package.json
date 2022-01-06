@@ -2,8 +2,8 @@
   "name": "mystyles",
   "license": "MIT",
   "scripts": {
-    "start": "npm run build && web-ext run --source-dir ./dist",
-    "build": "rimraf dist && tsc && cp manifest.json ./dist",
+    "start": "npm run build && web-ext run",
+    "build": "rimraf dist && tsc",
     "lint": "eslint \"src/**/*.ts\"",
     "format": "npm run lint -- --fix && prettier -w \"src/**/*.scss\""
   },
