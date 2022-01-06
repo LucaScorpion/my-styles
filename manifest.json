@@ -9,17 +9,25 @@
     ]
   },
   "icons": {
-    "48": "icon_48.png",
-    "96": "icon_96.png"
+    "48": "assets/icon_48.png",
+    "96": "assets/icon_96.png"
   },
   "browser_action": {
     "browser_style": true,
-    "default_icon": "icon_96.png",
+    "default_icon": "assets/icon_96.png",
     "default_popup": "dist/popup.html",
     "default_title": "My Styles"
   },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "LucaScorpion_my-styles@GitHub",
+      "strict_min_version": "60.0"
+    }
+  },
   "permissions": [
+    "storage",
     "tabs",
+    "unlimitedStorage",
     "webRequest",
     "<all_urls>"
   ]

@@ -1,0 +1,13 @@
+body {
+  padding: 0 10px 10px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+}
+
+.title img {
+  margin-right: 10px;
+}
+
