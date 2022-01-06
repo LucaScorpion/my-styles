@@ -1,15 +1,17 @@
 {
-  "name": "mystyles",
+  "name": "my-styles",
   "license": "MIT",
   "scripts": {
     "start": "npm run build && web-ext run",
-    "build": "rimraf dist && tsc",
+    "build": "rimraf dist && tsc && npm run build:copy",
+    "build:copy": "copyfiles -u 1 -e \"**/*.ts\" \"src/*\" dist",
     "lint": "eslint \"src/**/*.ts\"",
-    "format": "npm run lint -- --fix && prettier -w \"src/**/*.scss\""
+    "format": "npm run lint -- --fix && prettier -w \"src/**/*.html\""
   },
   "devDependencies": {
     "@types/firefox-webext-browser": "^94.0.1",
     "@typescript-eslint/eslint-plugin": "^5.9.0",
+    "copyfiles": "^2.4.1",
     "eslint": "^8.6.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",

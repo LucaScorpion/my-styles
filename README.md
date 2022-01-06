@@ -1,4 +1,4 @@
-# mystyles
+# My Styles
 
 Apply custom user styles to pages.
 

@@ -22,7 +22,7 @@ const stylesPerHostName: Record<string, string> = {
       background: radial-gradient(transparent 55%, hotpink 80%);
       z-index: 999999;
     }
-  `
+  `,
 };
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
