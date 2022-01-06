@@ -1,0 +1,14 @@
+{
+  "description": "Apply custom user styles to pages.",
+  "manifest_version": 2,
+  "name": "mystyles",
+  "version": "0.1.0",
+  "page_action": {
+    "default_icon": "icons/toolbar.png",
+    "browser_style": true
+  },
+  "permissions": [
+    "tabs",
+    "webRequest"
+  ]
+}
