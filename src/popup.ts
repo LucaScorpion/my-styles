@@ -1,5 +1,6 @@
 import { getLocalStorage, getSyncStorage } from './storage';
 import { onClick } from './events';
+import { elemById } from './utils/elemById';
 
 (() => {
   displayStylesheetUrls();
@@ -12,7 +13,7 @@ import { onClick } from './events';
 
 async function displayStylesheetUrls(): Promise<void> {
   const sync = await getSyncStorage();
-  const containerElem = document.getElementById('stylesheet-urls')!;
+  const containerElem = elemById('stylesheet-urls');
   containerElem.replaceChildren();
 
   (sync.stylesheetUrls || []).forEach((url) => {
