@@ -1,3 +1,6 @@
+@import 'colors.css';
+@import 'tabs.css';
+
 body {
   padding: 0 10px 10px;
 }
@@ -20,4 +23,9 @@ button.square {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.bold {
+  font-weight: bold;
+  margin-top: 10px;
 }

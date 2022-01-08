@@ -1,8 +1,10 @@
 import { getLocalStorage, getSyncStorage } from './storage';
 import { onClick } from './events';
 import { elemById } from './utils/elemById';
+import { initTabs } from './tabs';
 
 (() => {
+  initTabs(elemById('tabs'), elemById('tabs-content'));
   displayStylesheetUrls();
 
   // Register event handlers.

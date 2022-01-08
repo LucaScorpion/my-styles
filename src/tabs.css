@@ -1,0 +1,29 @@
+.tabs {
+  display: flex;
+  margin-top: 10px;
+}
+
+.tabs > div {
+  flex: 1 1 0;
+  text-align: center;
+  cursor: pointer;
+  background-color: #eee;
+
+  border-width: 2px;
+  border-style: solid;
+  border-color: transparent #eee #ddd;
+}
+
+.tabs > div.active {
+  background-color: #fff;
+  border-color: var(--color-primary) #ddd #fff;
+}
+
+.tabs-content > div {
+  display: none;
+  padding-top: 10px;
+}
+
+.tabs-content > div.active {
+  display: initial;
+}
