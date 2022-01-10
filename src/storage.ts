@@ -42,6 +42,7 @@ export interface LocalStorage {
 }
 
 export interface CachedStylesheet {
+  stylesheet: Stylesheet;
   css: string;
   updated: number; // Date.now()
 }

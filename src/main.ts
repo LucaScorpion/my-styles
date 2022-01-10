@@ -3,83 +3,64 @@ import {
   getStylesheetCache,
   getStylesheets,
   setLocalStorage,
-  setSyncStorage,
   Storage,
   StorageChange,
   StorageChangeHandler,
   StorageChangeHandlers,
+  Stylesheet,
   StylesheetUrlCache,
-  SyncStorage,
 } from './storage';
 import { Message, MessageHandlers } from './messages';
+import _OnUpdatedChangeInfo = browser.tabs._OnUpdatedChangeInfo;
+import Tab = browser.tabs.Tab;
 
-const stylesPerHostName: Record<string, string> = {
-  'infi.nl': `
-    body {
-      border: 10px solid #f67905 !important;
-    }
-    body:before {
-      content: '';
-      position: fixed;
-      top: 0; left: 0; bottom: 0; right: 0;
-      background: radial-gradient(transparent 55%, #f67905 80%);
-      z-index: 999999;
-    }
-  `,
-  'jeroenheijmans.nl': `
-    body {
-      border: 10px solid hotpink !important;
-    }
-    body:before {
-      content: '';
-      position: fixed;
-      top: 0; left: 0; bottom: 0; right: 0;
-      background: radial-gradient(transparent 55%, hotpink 80%);
-      z-index: 999999;
-    }
-  `,
-};
+// ==== Bootstrap ====
 
-browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.status === 'complete' && tab.url) {
-    const uri = new URL(tab.url);
-    const code = stylesPerHostName[uri.hostname] ?? '';
-    browser.tabs.insertCSS(tabId, { code });
-  }
-});
+let stylesByHostname: Record<string, CachedStylesheet[]> = {};
 
-// Bootstrap.
 (async () => {
+  // Load the stylesheets from storage.
+  stylesByHostname = getStylesByHostname(await getStylesheetCache());
+
+  // Add all event listeners.
+  browser.tabs.onUpdated.addListener(tabsUpdateListener);
   browser.storage.onChanged.addListener(storageChangeListener);
   browser.runtime.onMessage.addListener(messageListener);
-
-  // TODO: remove debug code
-  await setSyncStorage({
-    stylesheets: [
-      {
-        url: 'https://gist.githubusercontent.com/LucaScorpion/6dd6a9b74e8326e420ed8d2a1f0a4635/raw/29151b4f58003e898642e5769b1e92502de64989/infi.nl.css',
-        host: 'infi.nl',
-      },
-      {
-        url: 'https://gist.githubusercontent.com/LucaScorpion/6dd6a9b74e8326e420ed8d2a1f0a4635/raw/29151b4f58003e898642e5769b1e92502de64989/infi.nl.css',
-        host: 'infi.nl',
-      },
-    ],
-  });
 })();
+
+// ==== End bootstrap ====
+
+function tabsUpdateListener(tabId: number, changeInfo: _OnUpdatedChangeInfo, tab: Tab): void {
+  if (changeInfo.status === 'complete' && tab.url) {
+    const tabUrl = new URL(tab.url);
+    const styles = stylesByHostname[tabUrl.hostname];
+    if (styles) {
+      for (const style of styles) {
+        browser.tabs
+          .insertCSS(tabId, { code: style.css })
+          .catch((e) => console.error(`Could not insert ${style.stylesheet.url} CSS into ${tabUrl.hostname}: ${e}`));
+      }
+    }
+  }
+}
 
 const storageChangeHandlers: StorageChangeHandlers = {
   sync: {
-    stylesheets: async (change: StorageChange<SyncStorage['stylesheets']>) => {
+    stylesheets: async (change) => {
       const cache = await getStylesheetCache();
       const newStyles = change.newValue || [];
 
       const stylesheetCache: StylesheetUrlCache = {};
       for (const style of newStyles) {
-        stylesheetCache[style.url] = await getStylesheetByUrl(style.url, cache);
+        stylesheetCache[style.url] = await getStylesheet(style, cache);
       }
 
       await setLocalStorage({ stylesheetCache });
+    },
+  },
+  local: {
+    stylesheetCache: (change) => {
+      stylesByHostname = getStylesByHostname(change.newValue || {});
     },
   },
 };
@@ -104,7 +85,7 @@ const messageHandlers: MessageHandlers = {
 
     const stylesheetCache: StylesheetUrlCache = {};
     for (const style of styles) {
-      stylesheetCache[style.url] = await loadStylesheetFromUrl(style.url);
+      stylesheetCache[style.url] = await loadStylesheet(style);
     }
 
     await setLocalStorage({ stylesheetCache });
@@ -120,29 +101,42 @@ function messageListener(msg: Message): void {
   }
 }
 
-function getStylesheetByUrl(url: string, cache: StylesheetUrlCache): Promise<CachedStylesheet> {
+function getStylesheet(stylesheet: Stylesheet, cache: StylesheetUrlCache): Promise<CachedStylesheet> {
   // Check if the stylesheet is in the cache.
-  const cached = cache[url];
+  const cached = cache[stylesheet.url];
   if (cached) {
     return Promise.resolve(cached);
   }
 
   // Cache miss, load the stylesheet.
-  return loadStylesheetFromUrl(url);
+  return loadStylesheet(stylesheet);
 }
 
-async function loadStylesheetFromUrl(url: string): Promise<CachedStylesheet> {
-  console.debug(`Loading stylesheet from: ${url}`);
+async function loadStylesheet(stylesheet: Stylesheet): Promise<CachedStylesheet> {
+  console.debug(`Loading stylesheet from: ${stylesheet.url}`);
 
   let css = '';
   try {
-    css = await fetch(url).then((r) => r.text());
+    css = await fetch(stylesheet.url).then((r) => r.text());
   } catch (err) {
     console.error(`Could not load stylesheet: ${err}`);
   }
 
   return {
+    stylesheet,
     css,
     updated: Date.now(),
   };
+}
+
+function getStylesByHostname(cache: StylesheetUrlCache): Record<string, CachedStylesheet[]> {
+  const result: Record<string, CachedStylesheet[]> = {};
+
+  Object.values(cache).forEach((style) => {
+    const newStyles = result[style.stylesheet.host] || [];
+    newStyles.push(style);
+    result[style.stylesheet.host] = newStyles;
+  });
+
+  return result;
 }
