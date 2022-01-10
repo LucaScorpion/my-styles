@@ -31,7 +31,7 @@ export function initTabs(tabs: HTMLElement, tabsContent: HTMLElement): void {
     if (child instanceof HTMLElement) {
       child.addEventListener('click', () => activateTab(i));
       child.addEventListener('keydown', (e) => {
-        if (e.code === 'Enter' || e.code === 'Space') {
+        if (e.key === 'Enter' || e.key === ' ') {
           activateTab(i);
         }
       });

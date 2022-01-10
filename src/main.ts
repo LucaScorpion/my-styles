@@ -1,4 +1,11 @@
-import { CachedStylesheet, getStylesheetCache, setLocalStorage, setSyncStorage, StylesheetUrlCache } from './storage';
+import {
+  CachedStylesheet,
+  getStylesheetCache,
+  setLocalStorage,
+  setSyncStorage,
+  StylesheetUrlCache,
+  SyncStorage,
+} from './storage';
 import StorageChange = browser.storage.StorageChange;
 
 const stylesPerHostName: Record<string, string> = {
@@ -62,14 +69,14 @@ interface Change<T> extends StorageChange {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const storageChangeHandlers: { [area: string]: Record<string, (change: Change<any>) => void> } = {
   sync: {
-    stylesheetUrls: async (change: Change<string[]>) => {
+    stylesheets: async (change: Change<SyncStorage['stylesheets']>) => {
       const cache = await getStylesheetCache();
-      const newUrls = change.newValue || [];
+      const newStyles = change.newValue || [];
 
       // Build the new cache.
       const stylesheetCache: StylesheetUrlCache = {};
-      for (const url of newUrls) {
-        stylesheetCache[url] = await getStylesheetByUrl(url, cache);
+      for (const style of newStyles) {
+        stylesheetCache[style.url] = await getStylesheetByUrl(style.url, cache);
       }
 
       // Store the new cache.

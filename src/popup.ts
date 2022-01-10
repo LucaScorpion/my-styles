@@ -1,4 +1,4 @@
-import { getStylesheets } from './storage';
+import { getStylesheets, setSyncStorage } from './storage';
 import { elemById } from './utils/elemById';
 import { initTabs } from './components/tabs';
 
@@ -8,11 +8,18 @@ import { initTabs } from './components/tabs';
   // noinspection JSIgnoredPromiseFromCall
   displayStylesheets();
 
+  const importElem = elemById('import-stylesheet');
+  const importInput = importElem.getElementsByTagName('input')[0];
+
   // Add event handlers.
   elemById('btn-import-stylesheet').addEventListener('click', () => {
-    const importElem = elemById('import-stylesheet');
     importElem.classList.remove('hide');
-    importElem.getElementsByTagName('input')[0].focus();
+    importInput.focus();
+  });
+  importInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      importStylesheet(importElem, importInput);
+    }
   });
 })();
 
@@ -30,4 +37,18 @@ async function displayStylesheets(): Promise<void> {
     child.textContent = style.url.substring(style.url.lastIndexOf('/') + 1);
     containerElem.appendChild(child);
   });
+}
+
+async function importStylesheet(importElem: HTMLElement, input: HTMLInputElement): Promise<void> {
+  const stylesheets = await getStylesheets();
+
+  // TODO: Check if the stylesheet is already imported.
+
+  stylesheets.push({ url: input.value });
+  await setSyncStorage({ stylesheets });
+
+  // Clear and update.
+  input.value = '';
+  importElem.classList.add('hide');
+  await displayStylesheets();
 }
