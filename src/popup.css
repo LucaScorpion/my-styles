@@ -8,7 +8,6 @@ body {
 
 .title {
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
@@ -37,6 +36,14 @@ button.square {
 
 #stylesheet-urls {
   margin-top: 10px;
+}
+
+#stylesheet-urls > div {
+  padding: 4px 8px;
+}
+
+#stylesheet-urls > div:nth-child(odd) {
+  background-color: var(--color-gray-light);
 }
 
 .hide {
