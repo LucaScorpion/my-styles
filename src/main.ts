@@ -1,6 +1,7 @@
 import {
   CachedStylesheet,
   getStylesheetCache,
+  getStylesheets,
   setLocalStorage,
   setSyncStorage,
   Storage,
@@ -50,6 +51,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 // Bootstrap.
 (async () => {
   browser.storage.onChanged.addListener(storageChangeListener);
+  browser.runtime.onMessage.addListener(messageListener);
 
   // TODO: remove debug code
   await setSyncStorage({
@@ -62,9 +64,6 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       },
     ],
   });
-
-  // Listen for messages.
-  browser.runtime.onMessage.addListener(messageListener);
 })();
 
 const storageChangeHandlers: StorageChangeHandlers = {
@@ -73,13 +72,11 @@ const storageChangeHandlers: StorageChangeHandlers = {
       const cache = await getStylesheetCache();
       const newStyles = change.newValue || [];
 
-      // Build the new cache.
       const stylesheetCache: StylesheetUrlCache = {};
       for (const style of newStyles) {
         stylesheetCache[style.url] = await getStylesheetByUrl(style.url, cache);
       }
 
-      // Store the new cache.
       await setLocalStorage({ stylesheetCache });
     },
   },
@@ -100,9 +97,15 @@ function storageChangeListener(changes: Record<string, StorageChange<unknown>>, 
 }
 
 const messageHandlers: MessageHandlers = {
-  'update-all': () => {
-    // TODO
-    console.log('Updating all');
+  'update-all': async () => {
+    const styles = await getStylesheets();
+
+    const stylesheetCache: StylesheetUrlCache = {};
+    for (const style of styles) {
+      stylesheetCache[style.url] = await loadStylesheetFromUrl(style.url);
+    }
+
+    await setLocalStorage({ stylesheetCache });
   },
 };
 
@@ -128,8 +131,16 @@ function getStylesheetByUrl(url: string, cache: StylesheetUrlCache): Promise<Cac
 
 async function loadStylesheetFromUrl(url: string): Promise<CachedStylesheet> {
   console.debug(`Loading stylesheet from: ${url}`);
+
+  let css = '';
+  try {
+    css = await fetch(url).then((r) => r.text());
+  } catch (err) {
+    console.error(`Could not load stylesheet: ${err}`);
+  }
+
   return {
-    css: await fetch(url).then((r) => r.text()),
+    css,
     updated: Date.now(),
   };
 }
