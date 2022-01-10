@@ -40,11 +40,18 @@ async function displayStylesheets(): Promise<void> {
 }
 
 async function importStylesheet(importElem: HTMLElement, input: HTMLInputElement): Promise<void> {
+  const url = input.value;
   const stylesheets = await getStylesheets();
 
-  // TODO: Check if the stylesheet is already imported.
+  // Check if the stylesheet is already part of the list.
+  const exists = !!stylesheets.find((s) => s.url === url);
+  if (exists) {
+    // TODO: Show a notification.
+    return;
+  }
 
-  stylesheets.push({ url: input.value });
+  // Store the new stylesheet.
+  stylesheets.push({ url });
   await setSyncStorage({ stylesheets });
 
   // Clear and update.
