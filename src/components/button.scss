@@ -5,12 +5,12 @@ button {
   border-radius: 4px;
   background-color: var(--color-gray);
   text-align: center;
-}
 
-button:hover {
-  background-color: var(--color-gray-hover);
-}
+  &:hover {
+    background-color: var(--color-gray-hover);
+  }
 
-button:active {
-  background-color: var(--color-gray-active);
+  &:active {
+    background-color: var(--color-gray-active);
+  }
 }

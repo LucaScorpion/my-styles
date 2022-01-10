@@ -1,0 +1,41 @@
+@import 'colors.scss';
+@import 'components/index.scss';
+
+body.popup {
+  padding: 0 10px 10px;
+  width: 300px;
+
+  .title {
+    display: flex;
+    align-items: center;
+
+    img {
+      margin-right: 10px;
+    }
+  }
+
+  .bold {
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  .actions {
+    margin-bottom: 10px;
+  }
+
+  .hide {
+    display: none;
+  }
+
+  #stylesheet-urls {
+    margin-top: 10px;
+
+    > div {
+      padding: 4px 8px;
+
+      &:nth-child(odd) {
+        background-color: var(--color-gray-light);
+      }
+    }
+  }
+}
