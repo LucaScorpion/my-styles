@@ -5,11 +5,9 @@ button {
   border-radius: 4px;
   background-color: var(--color-gray);
   text-align: center;
-  outline: none;
 }
 
-button:hover,
-button:focus {
+button:hover {
   background-color: var(--color-gray-hover);
 }
 
