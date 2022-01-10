@@ -1,5 +1,5 @@
 @import 'colors.css';
-@import 'tabs.css';
+@import 'components/index.css';
 
 body {
   padding: 0 10px 10px;
@@ -28,4 +28,8 @@ button.square {
 .bold {
   font-weight: bold;
   margin-top: 10px;
+}
+
+.actions {
+  margin-bottom: 10px;
 }
