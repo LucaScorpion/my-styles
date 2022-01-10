@@ -18,9 +18,13 @@
       <!-- Styles -->
       <div>
         <div class="button-group actions">
-          <button>Import</button>
-          <button>Update All</button>
+          <button id="btn-import-stylesheet">Import</button>
+          <button id="btn-update-all">Update all</button>
         </div>
+        <div id="import-stylesheet" class="hide">
+          <input placeholder="https://gist.github.com/..." />
+        </div>
+        <h2 id="stylesheet-urls-title">0 Styles</h2>
         <div id="stylesheet-urls"></div>
       </div>
       <!-- About -->

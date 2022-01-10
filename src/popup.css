@@ -3,6 +3,7 @@
 
 body {
   padding: 0 10px 10px;
+  width: 300px;
 }
 
 .title {
@@ -32,4 +33,12 @@ button.square {
 
 .actions {
   margin-bottom: 10px;
+}
+
+#stylesheet-urls {
+  margin-top: 10px;
+}
+
+.hide {
+  display: none;
 }

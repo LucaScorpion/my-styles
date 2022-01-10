@@ -1,4 +1,4 @@
-import { getStylesheetCache, setLocalStorage, setSyncStorage, Stylesheet, StylesheetUrlCache } from './storage';
+import { CachedStylesheet, getStylesheetCache, setLocalStorage, setSyncStorage, StylesheetUrlCache } from './storage';
 import StorageChange = browser.storage.StorageChange;
 
 const stylesPerHostName: Record<string, string> = {
@@ -42,10 +42,13 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
   // TODO: remove debug code
   await setSyncStorage({
-    stylesheetUrls: [
-      'https://gist.githubusercontent.com/LucaScorpion/6dd6a9b74e8326e420ed8d2a1f0a4635/raw/29151b4f58003e898642e5769b1e92502de64989/infi.nl.css',
-      'https://gist.githubusercontent.com/LucaScorpion/6dd6a9b74e8326e420ed8d2a1f0a4635/raw/29151b4f58003e898642e5769b1e92502de64989/infi.nl.css',
-      'https://gist.githubusercontent.com/LucaScorpion/6dd6a9b74e8326e420ed8d2a1f0a4635/raw/29151b4f58003e898642e5769b1e92502de64989/infi.nl.css',
+    stylesheets: [
+      {
+        url: 'https://gist.githubusercontent.com/LucaScorpion/6dd6a9b74e8326e420ed8d2a1f0a4635/raw/29151b4f58003e898642e5769b1e92502de64989/infi.nl.css',
+      },
+      {
+        url: 'https://gist.githubusercontent.com/LucaScorpion/6dd6a9b74e8326e420ed8d2a1f0a4635/raw/29151b4f58003e898642e5769b1e92502de64989/infi.nl.css',
+      },
     ],
   });
 })();
@@ -84,7 +87,7 @@ function storageChangeListener(changes: Record<string, StorageChange>, areaName:
   });
 }
 
-function getStylesheetByUrl(url: string, cache: StylesheetUrlCache): Promise<Stylesheet> {
+function getStylesheetByUrl(url: string, cache: StylesheetUrlCache): Promise<CachedStylesheet> {
   // Check if the stylesheet is in the cache.
   const cached = cache[url];
   if (cached) {
@@ -95,7 +98,7 @@ function getStylesheetByUrl(url: string, cache: StylesheetUrlCache): Promise<Sty
   return loadStylesheetFromUrl(url);
 }
 
-async function loadStylesheetFromUrl(url: string): Promise<Stylesheet> {
+async function loadStylesheetFromUrl(url: string): Promise<CachedStylesheet> {
   console.debug(`Loading stylesheet from: ${url}`);
   return {
     css: await fetch(url).then((r) => r.text()),
