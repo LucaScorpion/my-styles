@@ -1,16 +1,10 @@
-import { getLocalStorage, getSyncStorage } from './storage';
-import { onClick } from './events';
+import { getSyncStorage } from './storage';
 import { elemById } from './utils/elemById';
-import { initTabs } from './tabs';
+import { initTabs } from './components/tabs';
 
 (() => {
   initTabs(elemById('tabs'), elemById('tabs-content'));
   displayStylesheetUrls();
-
-  // Register event handlers.
-  onClick('log', async () => {
-    console.log(await getLocalStorage());
-  });
 })();
 
 async function displayStylesheetUrls(): Promise<void> {

@@ -8,6 +8,7 @@
   text-align: center;
   cursor: pointer;
   background-color: var(--color-gray);
+  padding: 2px;
 
   border-width: 2px;
   border-style: solid;
@@ -29,6 +30,7 @@
 .tabs > div.active {
   background-color: #fff;
   border-color: var(--color-primary) var(--color-gray-active) #fff;
+  font-weight: 500;
 }
 
 .tabs-content {
