@@ -10,6 +10,7 @@ import {
   StylesheetUrlCache,
   SyncStorage,
 } from './storage';
+import { Message, MessageHandlers } from './messages';
 
 const stylesPerHostName: Record<string, string> = {
   'infi.nl': `
@@ -61,6 +62,9 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       },
     ],
   });
+
+  // Listen for messages.
+  browser.runtime.onMessage.addListener(messageListener);
 })();
 
 const storageChangeHandlers: StorageChangeHandlers = {
@@ -93,6 +97,22 @@ function storageChangeListener(changes: Record<string, StorageChange<unknown>>, 
       handler(change);
     }
   });
+}
+
+const messageHandlers: MessageHandlers = {
+  'update-all': () => {
+    // TODO
+    console.log('Updating all');
+  },
+};
+
+function messageListener(msg: Message): void {
+  const handler = messageHandlers[msg.type];
+  if (handler) {
+    handler(msg);
+  } else {
+    console.error(`Unknown message:\n${JSON.stringify(msg, null, 2)}`);
+  }
 }
 
 function getStylesheetByUrl(url: string, cache: StylesheetUrlCache): Promise<CachedStylesheet> {

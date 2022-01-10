@@ -1,6 +1,7 @@
 import { getStylesheets, setSyncStorage } from './storage';
 import { elemById } from './utils/elemById';
 import { initTabs } from './components/tabs';
+import { sendMessage } from './messages';
 
 (() => {
   // Initialize.
@@ -21,6 +22,7 @@ import { initTabs } from './components/tabs';
       importStylesheet(importElem, importInput);
     }
   });
+  elemById('btn-update-all').addEventListener('click', () => sendMessage({ type: 'update-all' }));
 })();
 
 async function displayStylesheets(): Promise<void> {
