@@ -3,10 +3,13 @@ import {
   getStylesheetCache,
   setLocalStorage,
   setSyncStorage,
+  Storage,
+  StorageChange,
+  StorageChangeHandler,
+  StorageChangeHandlers,
   StylesheetUrlCache,
   SyncStorage,
 } from './storage';
-import StorageChange = browser.storage.StorageChange;
 
 const stylesPerHostName: Record<string, string> = {
   'infi.nl': `
@@ -60,16 +63,9 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   });
 })();
 
-interface Change<T> extends StorageChange {
-  oldValue?: T;
-  newValue?: T;
-}
-
-// The any here is required because we don't know the specific type of each handler.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const storageChangeHandlers: { [area: string]: Record<string, (change: Change<any>) => void> } = {
+const storageChangeHandlers: StorageChangeHandlers = {
   sync: {
-    stylesheets: async (change: Change<SyncStorage['stylesheets']>) => {
+    stylesheets: async (change: StorageChange<SyncStorage['stylesheets']>) => {
       const cache = await getStylesheetCache();
       const newStyles = change.newValue || [];
 
@@ -85,9 +81,14 @@ const storageChangeHandlers: { [area: string]: Record<string, (change: Change<an
   },
 };
 
-function storageChangeListener(changes: Record<string, StorageChange>, areaName: string): void {
+function storageChangeListener(changes: Record<string, StorageChange<unknown>>, areaName: string): void {
   Object.entries(changes).forEach(([key, change]) => {
-    const handler = (storageChangeHandlers[areaName] || {})[key];
+    // The `any` here is required because we don't know which set of handlers is returned,
+    // and we can't use `key` to get the right type either.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const areaHandlers: Record<string, StorageChangeHandler<any>> = storageChangeHandlers[areaName as keyof Storage] ||
+    {};
+    const handler = areaHandlers[key];
     if (handler) {
       handler(change);
     }

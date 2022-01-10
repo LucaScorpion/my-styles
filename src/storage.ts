@@ -1,3 +1,21 @@
+export interface StorageChange<T> extends browser.storage.StorageChange {
+  oldValue?: T;
+  newValue?: T;
+}
+
+export type StorageChangeHandler<T> = (change: StorageChange<T>) => void | Promise<void>;
+
+export type StorageChangeHandlers = {
+  [area in keyof Storage]?: {
+    [key in keyof Storage[area]]?: StorageChangeHandler<Storage[area][key]>;
+  };
+};
+
+export interface Storage {
+  sync: SyncStorage;
+  local: LocalStorage;
+}
+
 export interface SyncStorage {
   stylesheets?: Stylesheet[];
 }
