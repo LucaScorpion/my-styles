@@ -1,6 +1,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body class="popup">
@@ -10,28 +11,35 @@
     </div>
 
     <div id="tabs" class="tabs">
+      <div>Add</div>
       <div>Styles</div>
       <div>About</div>
     </div>
 
     <div id="tabs-content" class="tabs-content">
+      <!-- Add -->
+      <div>
+        <form id="add-stylesheet">
+          <label for="new-stylesheet-url">Stylesheet URL</label>
+          <input name="url" id="new-stylesheet-url" placeholder="https://gist.github.com/..." required />
+          <label for="new-stylesheet-host">Host</label>
+          <input name="host" id="new-stylesheet-host" placeholder="duckduckgo.com" required />
+          <button>Save</button>
+        </form>
+      </div>
       <!-- Styles -->
       <div>
         <div class="button-group actions">
-          <button id="btn-import-stylesheet">Import</button>
           <button id="btn-update-all">Update all</button>
-        </div>
-        <div id="import-stylesheet" class="hide">
-          <input placeholder="https://gist.github.com/..." />
         </div>
         <h2 id="stylesheet-urls-title">0 Styles</h2>
         <div id="stylesheet-urls"></div>
       </div>
       <!-- About -->
       <div>
-        <div class="bold">Created By</div>
+        <label>Created By</label>
         <div><a href="https://github.com/LucaScorpion" rel="noopener noreferrer">Luca Scalzotto</a></div>
-        <div class="bold">Source Code</div>
+        <label>Source Code</label>
         <div><a href="https://github.com/LucaScorpion/my-styles">GitHub</a></div>
       </div>
     </div>

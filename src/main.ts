@@ -58,9 +58,11 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     stylesheets: [
       {
         url: 'https://gist.githubusercontent.com/LucaScorpion/6dd6a9b74e8326e420ed8d2a1f0a4635/raw/29151b4f58003e898642e5769b1e92502de64989/infi.nl.css',
+        host: 'infi.nl',
       },
       {
         url: 'https://gist.githubusercontent.com/LucaScorpion/6dd6a9b74e8326e420ed8d2a1f0a4635/raw/29151b4f58003e898642e5769b1e92502de64989/infi.nl.css',
+        host: 'infi.nl',
       },
     ],
   });

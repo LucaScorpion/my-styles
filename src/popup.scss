@@ -1,6 +1,3 @@
-@import 'colors.scss';
-@import 'components/index.scss';
-
 body.popup {
   padding: 0 10px 10px;
   width: 300px;
@@ -14,22 +11,13 @@ body.popup {
     }
   }
 
-  .bold {
+  label {
     font-weight: bold;
-    margin-top: 10px;
-  }
-
-  .actions {
-    margin-bottom: 10px;
-  }
-
-  .hide {
-    display: none;
+    margin-top: 4px;
+    display: block;
   }
 
   #stylesheet-urls {
-    margin-top: 10px;
-
     > div {
       padding: 4px 8px;
 

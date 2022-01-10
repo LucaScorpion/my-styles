@@ -22,6 +22,7 @@ export interface SyncStorage {
 
 export interface Stylesheet {
   url: string;
+  host: string;
 }
 
 export function getSyncStorage<K extends keyof SyncStorage>(keys?: K | K[]): Promise<SyncStorage> {

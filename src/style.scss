@@ -1,3 +1,7 @@
+@import 'colors.scss';
+@import 'components/button-group';
+@import 'components/tabs';
+
 button {
   cursor: pointer;
   padding: 4px 8px;
@@ -12,5 +16,18 @@ button {
 
   &:active {
     background-color: var(--color-gray-active);
+  }
+}
+
+input {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--color-gray);
+  width: 100%;
+}
+
+form {
+  button {
+    margin-top: 8px;
   }
 }
