@@ -33,14 +33,7 @@ let stylesByHostname: Record<string, CachedStylesheet[]> = {};
 function tabsUpdateListener(tabId: number, changeInfo: _OnUpdatedChangeInfo, tab: Tab): void {
   if (changeInfo.status === 'complete' && tab.url) {
     const tabUrl = new URL(tab.url);
-    const styles = stylesByHostname[tabUrl.hostname];
-    if (styles) {
-      for (const style of styles) {
-        browser.tabs
-          .insertCSS(tabId, { code: style.css })
-          .catch((e) => console.error(`Could not insert ${style.stylesheet.url} CSS into ${tabUrl.hostname}: ${e}`));
-      }
-    }
+    insertCss(tabId, stylesByHostname[tabUrl.hostname]);
   }
 }
 
@@ -59,8 +52,23 @@ const storageChangeHandlers: StorageChangeHandlers = {
     },
   },
   local: {
-    stylesheetCache: (change) => {
-      stylesByHostname = getStylesByHostname(change.newValue || {});
+    stylesheetCache: async (change) => {
+      const newStylesByHostname = getStylesByHostname(change.newValue || {});
+
+      // Refresh the styles on all tabs.
+      const allTabs = await browser.tabs.query({});
+      for (const tab of allTabs) {
+        if (!tab.id || !tab.url) {
+          continue;
+        }
+        const tabUrl = new URL(tab.url);
+
+        // Remove any previous styles, insert the new styles.
+        removeCss(tab.id, stylesByHostname[tabUrl.hostname]);
+        insertCss(tab.id, newStylesByHostname[tabUrl.hostname]);
+      }
+
+      stylesByHostname = newStylesByHostname;
     },
   },
 };
@@ -139,4 +147,22 @@ function getStylesByHostname(cache: StylesheetUrlCache): Record<string, CachedSt
   });
 
   return result;
+}
+
+function removeCss(tabId: number, styles: CachedStylesheet[] | undefined): void {
+  if (styles) {
+    for (const style of styles) {
+      console.debug(`Removing CSS: ${style.stylesheet.url}`);
+      browser.tabs.removeCSS(tabId, { code: style.css }).catch((e) => console.error(`Could not remove CSS: ${e}`));
+    }
+  }
+}
+
+function insertCss(tabId: number, styles: CachedStylesheet[] | undefined): void {
+  if (styles) {
+    for (const style of styles) {
+      console.debug(`Inserting CSS: ${style.stylesheet.url}`);
+      browser.tabs.insertCSS(tabId, { code: style.css }).catch((e) => console.error(`Could not insert CSS: ${e}`));
+    }
+  }
 }
