@@ -3,6 +3,7 @@ export interface Message {
 }
 
 export interface MessageTypes {
+  'apply-scratchpad': Message;
   'update-all': Message;
 }
 

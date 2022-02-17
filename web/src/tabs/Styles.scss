@@ -1,0 +1,14 @@
+.tab-styles {
+  .list {
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px;
+
+      &:hover {
+        background-color: var(--color-gray-light);
+      }
+    }
+  }
+}

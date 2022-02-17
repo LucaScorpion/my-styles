@@ -3,26 +3,30 @@
   "description": "Apply custom user styles to pages.",
   "manifest_version": 2,
   "version": "0.1.0",
-  "background": {
-    "scripts": [
-      "dist/main.js"
-    ]
-  },
-  "icons": {
-    "48": "assets/icon_48.png",
-    "96": "assets/icon_96.png"
-  },
-  "browser_action": {
-    "browser_style": true,
-    "default_icon": "assets/icon_96.png",
-    "default_popup": "dist/popup.html",
-    "default_title": "My Styles"
-  },
   "browser_specific_settings": {
     "gecko": {
       "id": "LucaScorpion_my-styles@GitHub",
       "strict_min_version": "60.0"
     }
+  },
+  "background": {
+    "scripts": [
+      "dist/main.js"
+    ]
+  },
+  "browser_action": {
+    "browser_style": true,
+    "default_icon": "assets/icon_96.png",
+    "default_popup": "dist/popup/index.html",
+    "default_title": "My Styles"
+  },
+  "icons": {
+    "48": "assets/icon_48.png",
+    "96": "assets/icon_96.png"
+  },
+  "options_ui": {
+    "browser_style": true,
+    "page": "dist/popup/index.html"
   },
   "permissions": [
     "storage",

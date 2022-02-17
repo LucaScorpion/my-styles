@@ -1,8 +1,9 @@
-.button-group {
+.group {
   display: flex;
+  width: 100%;
 
-  > button {
-    flex: 1 1 0;
+  > * {
+    flex: auto;
 
     &:not(:first-child) {
       border-top-left-radius: 0;

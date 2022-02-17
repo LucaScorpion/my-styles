@@ -1,0 +1,13 @@
+@import 'reset';
+@import 'colors';
+@import 'style';
+
+#root {
+  @import '../Options';
+  @import '../tabs/About';
+  @import '../tabs/Add';
+  @import '../tabs/Scratchpad';
+  @import '../tabs/Styles';
+  @import '../components/Group';
+  @import '../components/Tabs';
+}

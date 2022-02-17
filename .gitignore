@@ -6,3 +6,8 @@ node_modules/
 
 # Build
 dist/
+web-ext-artifacts/
+.web-extension-id
+
+# Logs
+yarn-error.log

@@ -39,12 +39,18 @@ export async function getStylesheets(): Promise<Stylesheet[]> {
 
 export interface LocalStorage {
   stylesheetCache?: StylesheetUrlCache;
+  scratchpad?: Scratchpad;
 }
 
 export interface CachedStylesheet {
   stylesheet: Stylesheet;
   css: string;
   updated: number; // Date.now()
+}
+
+export interface Scratchpad {
+  code: string;
+  host: string;
 }
 
 export type StylesheetUrlCache = Record<string, CachedStylesheet>;
@@ -59,4 +65,13 @@ export function setLocalStorage(items: Partial<LocalStorage>): Promise<void> {
 
 export async function getStylesheetCache(): Promise<StylesheetUrlCache> {
   return (await getLocalStorage('stylesheetCache')).stylesheetCache || {};
+}
+
+export async function getScratchpad(): Promise<Scratchpad> {
+  return (
+    (await getLocalStorage('scratchpad')).scratchpad || {
+      code: '',
+      host: '',
+    }
+  );
 }
