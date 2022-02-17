@@ -20,7 +20,7 @@
     "react-dom": "^17.0.2",
     "react-scripts": "5.0.0",
     "sass": "^1.49.0",
-    "types": "link:../types"
+    "types": "0.1.0"
   },
   "browserslist": {
     "production": [

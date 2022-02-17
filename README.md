@@ -9,7 +9,7 @@ Apply custom user styles to pages.
 ```shell
 # Build the extension.
 # This is required before running the extension with Firefox, and whenever you make changes.
-yarn build
+yarn build:code
 
 # Build and run the extension with Firefox.
 yarn start

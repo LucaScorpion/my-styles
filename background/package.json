@@ -11,6 +11,6 @@
     "ts-loader": "^9.2.6",
     "webpack": "^5.67.0",
     "webpack-cli": "^4.9.2",
-    "types": "link:../types"
+    "types": "0.1.0"
   }
 }

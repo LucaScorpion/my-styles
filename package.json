@@ -11,7 +11,7 @@
   "scripts": {
     "start": "web-ext run",
     "build": "yarn build:code && yarn build:ext",
-    "build:code": "wsrun build",
+    "build:code": "wsrun -t build",
     "build:ext": "web-ext build",
     "lint": "wsrun lint",
     "format": "wsrun format"
