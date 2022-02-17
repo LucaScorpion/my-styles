@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { TextInput } from '../components/input/TextInput';
+import { useStylesheets } from '../storage/styles';
 
 export const Add: React.FC = () => {
   const [url, setUrl] = useState('');
+  const [stylesheets, setStylesheets] = useStylesheets();
 
   return (
     <div className="tab-add">
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          // TODO: Store stylesheet.
+          setStylesheets([...stylesheets, { url, host: '' }]);
           setUrl('');
         }}
       >

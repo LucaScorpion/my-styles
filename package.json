@@ -5,6 +5,7 @@
   "private": true,
   "workspaces": [
     "background",
+    "types",
     "web"
   ],
   "scripts": {
@@ -16,6 +17,14 @@
     "format": "wsrun format"
   },
   "devDependencies": {
+    "@types/firefox-webext-browser": "^94.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
+    "eslint": "^8.9.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.5",
     "web-ext": "^6.6.0",
     "wsrun": "^5.2.4"
   }

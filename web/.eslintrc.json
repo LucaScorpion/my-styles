@@ -2,7 +2,6 @@
   "extends": [
     "react-app",
     "react-app/jest",
-    "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
   ]
 }

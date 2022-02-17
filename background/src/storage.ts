@@ -1,7 +1,6 @@
-export interface StorageChange<T> extends browser.storage.StorageChange {
-  oldValue?: T;
-  newValue?: T;
-}
+import { StorageChange } from 'types/dist/StorageChange';
+import { Stylesheet } from 'types/dist/Stylesheet';
+import { getLocalStorage, getSyncStorage, StylesheetUrlCache } from 'types/dist/storage';
 
 export type StorageChangeHandler<T> = (change: StorageChange<T>) => void | Promise<void>;
 
@@ -11,67 +10,10 @@ export type StorageChangeHandlers = {
   };
 };
 
-export interface Storage {
-  sync: SyncStorage;
-  local: LocalStorage;
-}
-
-export interface SyncStorage {
-  stylesheets?: Stylesheet[];
-}
-
-export interface Stylesheet {
-  url: string;
-  host: string;
-}
-
-export function getSyncStorage<K extends keyof SyncStorage>(keys?: K | K[]): Promise<SyncStorage> {
-  return browser.storage.sync.get(keys) as Promise<SyncStorage>;
-}
-
-export function setSyncStorage(items: Partial<SyncStorage>): Promise<void> {
-  return browser.storage.sync.set(items);
-}
-
 export async function getStylesheets(): Promise<Stylesheet[]> {
   return (await getSyncStorage('stylesheets')).stylesheets || [];
 }
 
-export interface LocalStorage {
-  stylesheetCache?: StylesheetUrlCache;
-  scratchpad?: Scratchpad;
-}
-
-export interface CachedStylesheet {
-  stylesheet: Stylesheet;
-  css: string;
-  updated: number; // Date.now()
-}
-
-export interface Scratchpad {
-  code: string;
-  host: string;
-}
-
-export type StylesheetUrlCache = Record<string, CachedStylesheet>;
-
-export function getLocalStorage<K extends keyof LocalStorage>(keys?: K | K[]): Promise<LocalStorage> {
-  return browser.storage.local.get(keys) as Promise<LocalStorage>;
-}
-
-export function setLocalStorage(items: Partial<LocalStorage>): Promise<void> {
-  return browser.storage.local.set(items);
-}
-
 export async function getStylesheetCache(): Promise<StylesheetUrlCache> {
   return (await getLocalStorage('stylesheetCache')).stylesheetCache || {};
-}
-
-export async function getScratchpad(): Promise<Scratchpad> {
-  return (
-    (await getLocalStorage('scratchpad')).scratchpad || {
-      code: '',
-      host: '',
-    }
-  );
 }

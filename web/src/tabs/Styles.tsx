@@ -1,8 +1,8 @@
 import React from 'react';
+import { useStylesheets } from '../storage/styles';
 
 export const Styles: React.FC = () => {
-  // TODO
-  const stylesheets: any[] = [];
+  const [stylesheets, setStylesheets] = useStylesheets();
 
   return (
     <div className="tab-styles">
@@ -13,7 +13,7 @@ export const Styles: React.FC = () => {
             <span className="group">
               <button>Update</button>
               <button>Disable</button>
-              <button onClick={() => undefined}>Delete</button>
+              <button onClick={() => setStylesheets(stylesheets.filter((check) => check.url !== s.url))}>Delete</button>
             </span>
           </div>
         ))}

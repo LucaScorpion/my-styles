@@ -1,20 +1,13 @@
-import {
-  CachedStylesheet,
-  getScratchpad,
-  getStylesheetCache,
-  getStylesheets,
-  setLocalStorage,
-  Storage,
-  StorageChange,
-  StorageChangeHandler,
-  StorageChangeHandlers,
-  Stylesheet,
-  StylesheetUrlCache,
-} from './storage';
-import { Message, MessageHandlers } from './messages';
+import { MessageHandlers } from './messages';
+import { getActiveTabId } from './getActiveTabId';
+import { CachedStylesheet } from 'types/dist/CachedStylesheet';
+import { getStylesheetCache, getStylesheets, StorageChangeHandlers } from './storage';
+import { setLocalStorage, StylesheetUrlCache } from 'types/dist/storage';
+import { StorageChange } from 'types/dist/StorageChange';
+import { Stylesheet } from 'types/dist/Stylesheet';
+import { Message } from 'types/dist/messages';
 import _OnUpdatedChangeInfo = browser.tabs._OnUpdatedChangeInfo;
 import Tab = browser.tabs.Tab;
-import { getActiveTabId } from './getActiveTabId';
 
 // ==== Bootstrap ====
 
@@ -79,11 +72,7 @@ const storageChangeHandlers: StorageChangeHandlers = {
 
 function storageChangeListener(changes: Record<string, StorageChange<unknown>>, areaName: string): void {
   Object.entries(changes).forEach(([key, change]) => {
-    // The `any` here is required because we don't know which set of handlers is returned,
-    // and we can't use `key` to get the right type either.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const areaHandlers: Record<string, StorageChangeHandler<any>> = storageChangeHandlers[areaName as keyof Storage] ||
-    {};
+    const areaHandlers = storageChangeHandlers[areaName as keyof Storage] || {};
     const handler = areaHandlers[key];
     if (handler) {
       handler(change);
@@ -98,10 +87,8 @@ const messageHandlers: MessageHandlers = {
       console.error('Cannot apply scratchpad because there is no active tab.');
       return;
     }
-    console.debug('Applying scratchpad.');
-    const scratchpad = await getScratchpad();
-    console.debug(scratchpad);
-    await insertCss(activeTabId, scratchpad.code);
+    // TODO: Get scratchpad code.
+    await insertCss(activeTabId, '');
   },
   'update-all': async () => {
     const styles = await getStylesheets();
