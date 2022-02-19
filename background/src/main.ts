@@ -1,11 +1,9 @@
-import { MessageHandlers } from './messages';
-import { getActiveTabId } from './getActiveTabId';
+import { messageListener } from './messages';
 import { CachedStylesheet } from 'types/dist/CachedStylesheet';
-import { getStylesheetCache, getStylesheets, StorageChangeHandlers } from './storage';
+import { getStylesheetCache, StorageChangeHandlers } from './storage';
 import { setLocalStorage, StylesheetUrlCache } from 'types/dist/storage';
 import { StorageChange } from 'types/dist/StorageChange';
-import { Stylesheet } from 'types/dist/Stylesheet';
-import { Message } from 'types/dist/messages';
+import { getOrLoadStylesheet } from './stylesheets';
 import _OnUpdatedChangeInfo = browser.tabs._OnUpdatedChangeInfo;
 import Tab = browser.tabs.Tab;
 
@@ -42,7 +40,7 @@ const storageChangeHandlers: StorageChangeHandlers = {
 
       const stylesheetCache: StylesheetUrlCache = {};
       for (const style of newStyles) {
-        stylesheetCache[style.url] = await getStylesheet(style, cache);
+        stylesheetCache[style.url] = await getOrLoadStylesheet(style, cache);
       }
 
       await setLocalStorage({ stylesheetCache });
@@ -80,65 +78,6 @@ function storageChangeListener(changes: Record<string, StorageChange<unknown>>, 
   });
 }
 
-const messageHandlers: MessageHandlers = {
-  'apply-scratchpad': async () => {
-    const activeTabId = await getActiveTabId();
-    if (!activeTabId) {
-      console.error('Cannot apply scratchpad because there is no active tab.');
-      return;
-    }
-    // TODO: Get scratchpad code.
-    await insertCss(activeTabId, '');
-  },
-  'update-all': async () => {
-    const styles = await getStylesheets();
-
-    const stylesheetCache: StylesheetUrlCache = {};
-    for (const style of styles) {
-      stylesheetCache[style.url] = await loadStylesheet(style);
-    }
-
-    await setLocalStorage({ stylesheetCache });
-  },
-};
-
-function messageListener(msg: Message): void {
-  const handler = messageHandlers[msg.type];
-  if (handler) {
-    handler(msg);
-  } else {
-    console.error(`Unknown message:\n${JSON.stringify(msg, null, 2)}`);
-  }
-}
-
-function getStylesheet(stylesheet: Stylesheet, cache: StylesheetUrlCache): Promise<CachedStylesheet> {
-  // Check if the stylesheet is in the cache.
-  const cached = cache[stylesheet.url];
-  if (cached) {
-    return Promise.resolve(cached);
-  }
-
-  // Cache miss, load the stylesheet.
-  return loadStylesheet(stylesheet);
-}
-
-async function loadStylesheet(stylesheet: Stylesheet): Promise<CachedStylesheet> {
-  console.debug(`Loading stylesheet from: ${stylesheet.url}`);
-
-  let css = '';
-  try {
-    css = await fetch(stylesheet.url).then((r) => r.text());
-  } catch (err) {
-    console.error(`Could not load stylesheet: ${err}`);
-  }
-
-  return {
-    stylesheet,
-    css,
-    updated: Date.now(),
-  };
-}
-
 function getStylesByHostname(cache: StylesheetUrlCache): Record<string, CachedStylesheet[]> {
   const result: Record<string, CachedStylesheet[]> = {};
 
@@ -167,8 +106,4 @@ function insertStylesheets(tabId: number, styles: CachedStylesheet[] | undefined
       browser.tabs.insertCSS(tabId, { code: style.css }).catch((e) => console.error(`Could not insert CSS: ${e}`));
     }
   }
-}
-
-function insertCss(tabId: number, code: string): Promise<void> {
-  return browser.tabs.insertCSS(tabId, { code }).catch((e) => console.error(`Could not insert CSS: ${e}`));
 }
