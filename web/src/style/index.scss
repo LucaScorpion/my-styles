@@ -2,6 +2,8 @@
 @import 'colors';
 @import 'style';
 
+@import '~@fortawesome/fontawesome-free/css/all.min.css';
+
 #root {
   @import '../Options';
   @import '../tabs/About';

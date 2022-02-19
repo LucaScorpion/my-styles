@@ -1,5 +1,8 @@
 import React from 'react';
 import { useStylesheets } from '../storage/styles';
+import { Icon } from '../components/Icon';
+import { ExternalLink } from '../components/ExternalLink';
+import { fileName } from '../utils/fileName';
 
 export const Styles: React.FC = () => {
   const [stylesheets, setStylesheets] = useStylesheets();
@@ -9,11 +12,19 @@ export const Styles: React.FC = () => {
       <div className="list">
         {stylesheets.map((s) => (
           <div key={s.url}>
-            <span>{s.url}</span>
+            <span className="info">
+              <ExternalLink to={s.url}>{fileName(s.url)}</ExternalLink>
+            </span>
             <span className="group">
-              <button>Update</button>
-              <button>Disable</button>
-              <button onClick={() => setStylesheets(stylesheets.filter((check) => check.url !== s.url))}>Delete</button>
+              <button>
+                <Icon icon="cloud-arrow-down" />
+              </button>
+              <button>
+                <Icon icon="eye-slash" />
+              </button>
+              <button onClick={() => setStylesheets(stylesheets.filter((check) => check.url !== s.url))}>
+                <Icon icon="trash" />
+              </button>
             </span>
           </div>
         ))}

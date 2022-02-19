@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextInput } from '../components/input/TextInput';
 import { useStylesheets } from '../storage/styles';
+import { addUrlScheme } from '../utils/addUrlScheme';
 
 export const Add: React.FC = () => {
   const [url, setUrl] = useState('');
@@ -11,7 +12,13 @@ export const Add: React.FC = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          setStylesheets([...stylesheets, { url, host: '' }]);
+          setStylesheets([
+            ...stylesheets,
+            {
+              url: addUrlScheme(url),
+              host: '',
+            },
+          ]);
           setUrl('');
         }}
       >

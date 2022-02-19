@@ -9,6 +9,14 @@
       &:hover {
         background-color: var(--color-gray-light);
       }
+
+      .info {
+        margin-right: 12px;
+      }
+
+      .group {
+        flex: 0 1 auto;
+      }
     }
   }
 }

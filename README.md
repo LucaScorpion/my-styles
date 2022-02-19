@@ -14,10 +14,6 @@ yarn build:code
 # Build and run the extension with Firefox.
 yarn start
 
-# Run the web as a standalone page.
-# This limits the functionality, but allows you to view it as a normal web page.
-cd web && yarn start
-
 # Format the code.
 yarn format
 ```
